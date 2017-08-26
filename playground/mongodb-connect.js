@@ -15,16 +15,16 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     console.log(JSON.stringify(res.ops, undefined, 2));
   });
 
-  // db.collection('Users').insertOne({
-  //   name: 'Mario Sukamoto',
-  //   age: 29,
-  //   location: 'Tokyo'
-  // }, (err, res) => {
-  //   if(err) {
-  //     console.log('Unable to insert user', res);
-  //   }
-  //   console.log(res.ops[0]._id.getTimestamp());
-  // });
+  db.collection('Users').insertOne({
+    name: 'Mario Sukamoto',
+    age: 29,
+    location: 'Tokyo'
+  }, (err, res) => {
+    if(err) {
+      console.log('Unable to insert user', res);
+    }
+    console.log(res.ops[0]._id.getTimestamp());
+  });
   //
   db.close();
 });
