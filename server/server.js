@@ -14,10 +14,10 @@ app.post('/todos', (req, res) => {
     text: req.body.text
   });
   todo.save().then((data) => {
-    console.log('Success: ', data);
+    //console.log('Success: ', data);
     res.send(data);
   }, (error) => {
-    console.log('Error: ', error);
+    // console.log('Error: ', error);
     res.status(400).send(error);
   });
 });
@@ -25,3 +25,8 @@ app.post('/todos', (req, res) => {
 app.listen(3000, () => {
   console.log('Started on port 3000');
 });
+
+
+module.exports = {
+  app
+};
