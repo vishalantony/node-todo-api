@@ -7,8 +7,18 @@ const { app } = require('../server');
 const { Todo } = require('../models/todo');
 const { User } = require('../models/user');
 
+const todos = [
+  { text: 'first test todo' },
+  { text: 'first test todo' },
+  { text: 'first test todo' },
+  { text: 'first test todo' },
+  { text: 'first test todo' }
+];
+
 beforeEach((done) => {
-  Todo.remove({}).then(() => done()); //will move to test case only when done is called
+  Todo.remove({}).then(() => {
+    return Todo.insertMany(todos);
+  }).then(() => done()); //will move to test case only when done is called
 });
 
 describe('POST /todos', () => {
@@ -28,8 +38,8 @@ describe('POST /todos', () => {
           return done(err);
         }
         Todo.find().then((todos) => {
-          expect(todos.length).toBe(1);
-          expect(todos[0].text).toBe(text);
+          expect(todos.length).toBe(6);
+          expect(todos[todos.length-1].text).toBe(text);
           done();
         }).catch((e) => done(e));
       });
@@ -45,7 +55,25 @@ describe('POST /todos', () => {
           return done(err);
         }
         Todo.find().then((todos) => {
-          expect(todos.length).toBe(0);
+          expect(todos.length).toBe(5);
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+});
+
+describe('GET /todos', () => {
+  it('should get all todos', (done) => {
+    request(app)
+      .get('/todos')
+      .expect(200)
+      .end((err, res) => {
+        if(err) {
+          done(err);
+        }
+        Todo.find().then((todos) => {
+          expect(res.body.count).toBe(todos.length);
+          expect(res.body.todos.length).toBe(todos.length);
           done();
         }).catch((e) => done(e));
       });
