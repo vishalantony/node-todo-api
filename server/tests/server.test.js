@@ -1,5 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
 const { app } = require('../server');
 
@@ -8,11 +9,11 @@ const { Todo } = require('../models/todo');
 const { User } = require('../models/user');
 
 const todos = [
-  { text: 'first test todo' },
-  { text: 'first test todo' },
-  { text: 'first test todo' },
-  { text: 'first test todo' },
-  { text: 'first test todo' }
+  { _id: new ObjectID(), text: 'first test todo' },
+  { _id: new ObjectID(), text: 'first test todo' },
+  { _id: new ObjectID(), text: 'first test todo' },
+  { _id: new ObjectID(), text: 'first test todo' },
+  { _id: new ObjectID(), text: 'first test todo' }
 ];
 
 beforeEach((done) => {
@@ -22,7 +23,7 @@ beforeEach((done) => {
 });
 
 describe('POST /todos', () => {
-  it('should create a new todo', (done) => {
+  it('1. should create a new todo', (done) => {
     var text = 'Testing todo';
     request(app)
       .post('/todos')
@@ -45,7 +46,7 @@ describe('POST /todos', () => {
       });
   });
 
-  it('should not create todo with invalid body data', (done) => {
+  it('2. should not create todo with invalid body data', (done) => {
     request(app)
       .post('/todos')
       .send({})
@@ -63,7 +64,7 @@ describe('POST /todos', () => {
 });
 
 describe('GET /todos', () => {
-  it('should get all todos', (done) => {
+  it('3. should get all todos', (done) => {
     request(app)
       .get('/todos')
       .expect(200)
@@ -78,4 +79,30 @@ describe('GET /todos', () => {
         }).catch((e) => done(e));
       });
   });
+});
+
+
+describe('GET /todos/:id', () => {
+  it('4. should return todo doc', (done) => {
+    request(app)
+      .get(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+        expect(res.body.todo._id).toBe(todos[0]._id.toHexString());
+      })
+      .end(done);
+  });
+
+  it('5.should return 404 for todo not found', (done) => {
+    request(app)
+      .get(`/todos/${(new ObjectID()).toHexString()}`)
+      .expect(404, done);
+  });
+
+  it('6.should return 404 for non ObjectIDs', (done) => {
+    request(app)
+      .get(`/todos/${parseInt(Math.random() * 10000000)}`)
+      .expect(404, done);
+  })
 });
