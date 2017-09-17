@@ -122,6 +122,16 @@ app.post('/users/login', (req, res) => {
   })
 });
 
+app.delete('/users/me/token', authenticate, (req, res) => {
+  var user = req.user;
+
+  user.removeToken(req.token).then(() => {
+    res.status(200).send();
+  }).catch((e) => {
+    res.status(400).send(err);
+  });
+});
+
 app.listen(config.PORT, () => {
   console.log('Started on port', config.PORT);
 });
