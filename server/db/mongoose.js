@@ -1,8 +1,8 @@
-const config = require('../config');
+const config = require('../config/config');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(config.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI);
 
 module.exports = {
   mongoose

@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('./config/config');
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -149,8 +149,8 @@ app.delete('/users/me/token', authenticate, (req, res) => {
   });
 });
 
-app.listen(config.PORT, () => {
-  console.log('Started on port', config.PORT);
+app.listen(process.env.PORT, () => {
+  console.log('Started on port', process.env.PORT);
 });
 
 
