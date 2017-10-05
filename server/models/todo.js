@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
-var Todo = mongoose.model('Todo', {
+var TodoSchema = new mongoose.Schema({
   text: {
     type: String,
     required: true,
@@ -21,6 +22,14 @@ var Todo = mongoose.model('Todo', {
     required: true
   }
 });
+
+TodoSchema.methods.toJSON = function() {
+  var todo = this;
+  var todoObj = todo.toObject();
+  return _.pick(todoObj, ['_id', '_creator', 'text', 'completed', 'completedAt']);
+};
+
+var Todo = mongoose.model('Todo', TodoSchema);
 
 module.exports = {
   Todo
